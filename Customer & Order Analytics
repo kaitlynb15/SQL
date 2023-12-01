@@ -1,7 +1,4 @@
-SELECT *
-FROM BIT_DB.customers
-WHERE length(order_id) = 6
-AND order_id <> 'Order ID';
+#In this SQL, I'm querying a database with multiple tables in it to quantify statistics about customer and order data. 
 
 #How many orders were placed in January?
 
