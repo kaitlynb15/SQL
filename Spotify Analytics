@@ -1,0 +1,139 @@
+#For this project, I downloaded Spotify data from Kaggle.
+#hen I created a table to insert Spotify data into.
+#Finally, I performed analytics on the data using SQL. 
+
+#Creating the table: 
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+)
+
+#Then I inserted the Spotify Data .csv into the table.
+
+#Next, I explored the data using the following SQL. 
+
+#What is the average danceability by artist?
+
+SELECT artist_name,
+AVG(danceability) AS avg_danceability
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name;
+
+#Who are the top 10 artists based on popularity? 
+
+SELECT artist_name,
+SUM(popularity) AS total_popularity 
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY total_popularity DESC
+LIMIT 10;
+
+#What artist released the longest song and what is the song called? 
+
+SELECT artist_name,
+track_name,
+duration_ms
+FROM BIT_DB.Spotifydata
+ORDER BY duration_ms DESC
+LIMIT 1;
+
+#What's the average danceability for the 10 most popular songs?
+
+SELECT track_name,
+danceability
+FROM BIT_DB.Spotifydata
+GROUP BY track_name
+Order BY popularity DESC
+LIMIT 10;
+
+#How many tracks did each artist have make to the Top 50 in 2021?
+
+SELECT artist_name,
+COUNT(artist_name) AS times_on_top50
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY times_on_top50 DESC;
+
+#Who put out the most tracks that made it to the top 50?
+
+SELECT artist_name,
+COUNT(artist_name) AS times_on_top50
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY times_on_top50 DESC
+LIMIT 1;
+
+#What is Olivia Rodrigo's stats for popularity, danceability, energy, loudness, and duration?
+
+SELECT artist_name,
+COUNT(track_name) AS num_tracks_on_top50,
+SUM(popularity) AS total_popularity,AVG(popularity) AS avg_popularity,
+SUM(danceability) AS total_danceability, AVG(danceability) AS avg_danceability,
+SUM(energy) AS total_energy, AVG(energy) AS avg_energy,
+AVG(loudness) AS avg_loudness,
+AVG(duration_ms) AS avg_duration_ms
+FROM BIT_DB.Spotifydata
+WHERE artist_name = 'Olivia Rodrigo';
+
+#How do the longest and shortest song compare in popularity?
+
+SELECT artist_name,
+track_name,
+duration_ms
+FROM BIT_DB.Spotifydata
+ORDER BY duration_ms DESC
+LIMIT 1;
+
+SELECT artist_name,
+track_name,
+duration_ms
+FROM BIT_DB.Spotifydata
+ORDER BY duration_ms
+LIMIT 1;
+
+SELECT track_name,
+popularity
+FROM BIT_DB.Spotifydata 
+WHERE track_name = 'Pepas'
+OR track_name = 'Astronaut In The Ocean'
+ORDER BY popularity DESC;
+
+#What was the bottom ten song based on popularity and who sang them?
+
+SELECT artist_name,
+track_name,
+popularity
+FROM BIT_DB.Spotifydata
+ORDER BY popularity
+LIMIT 10;
+
+#Did any artist have a song in BOTH the top and bottom 10 songs based on popularity? If so, who and what songs?
+
+SELECT artist_name,
+track_name,
+popularity,
+CASE 
+     WHEN popularity <= 82 THEN 'Bottom Popularity'
+     WHEN popularity >= 92 THEN 'Top Popularity'
+     ELSE 'Not Top or Bottom'
+END AS top_or_bottom
+FROM BIT_DB.Spotifydata
+WHERE top_or_bottom <> 'Not Top or Bottom'
+ORDER BY artist_name
+LIMIT 20;
